@@ -179,7 +179,7 @@ function load() {
       S.deactivated = p.deactivated || [];
     } catch(e) {}
   }
-  if (!S.startDate) S.startDate = todayStr();
+  S.startDate = todayStr();
   autoActivate();
   save();
 }
