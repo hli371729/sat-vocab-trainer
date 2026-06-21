@@ -264,17 +264,17 @@ function nextCard() {
   if (due.length > 0) return due[0];
   if (reviewQ.length > 0) return reviewQ.shift();
   if (newQ.length > 0) return newQ.shift();
+  // Only learning cards left and none due yet — show the soonest one anyway
+  // instead of forcing an idle countdown.
   if (learningQ.length > 0) {
-    const times = learningQ.map(it => S.cards[it.vocab.word]?.due || Infinity);
-    return { waiting: true, nextDue: Math.min(...times) };
+    return learningQ.slice().sort((a, b) =>
+      (S.cards[a.vocab.word]?.due || 0) - (S.cards[b.vocab.word]?.due || 0))[0];
   }
   return null;
 }
 
 function queueSize() {
-  const now = Date.now();
-  const dueLearning = learningQ.filter(it => S.cards[it.vocab.word] && S.cards[it.vocab.word].due <= now).length;
-  return dueLearning + reviewQ.length + newQ.length;
+  return learningQ.length + reviewQ.length + newQ.length;
 }
 
 function show() {
@@ -289,11 +289,6 @@ function show() {
     ci.innerHTML = '<div class="waiting-icon">&#127881;</div><div style="font-size:20px;font-weight:600;color:#fff;margin-bottom:6px">All done!</div><div style="color:var(--tx3)">No cards due. Come back later or activate more lists.</div>';
     rt.style.display = 'none'; return;
   }
-  if (cur.waiting) {
-    showWaiting(cur.nextDue);
-    rt.style.display = 'none'; return;
-  }
-
   const v = cur.vocab;
   ci.className = 'card-anim';
   void ci.offsetWidth;
@@ -303,19 +298,6 @@ function show() {
     '<div class="pos">' + esc(v.pos || '') + '</div>' +
     '<div class="hint"><kbd>Space</kbd> or click to reveal</div>';
   rt.style.display = 'none';
-}
-
-function showWaiting(nextDue) {
-  const ci = document.getElementById('ci');
-  function tick() {
-    const rem = Math.max(0, nextDue - Date.now());
-    if (rem <= 0) { show(); return; }
-    const s = Math.ceil(rem / 1000);
-    const mmss = Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0');
-    ci.innerHTML = '<div class="waiting-icon">&#9203;</div><div style="color:var(--tx2);margin-bottom:8px">' + learningQ.length + ' card' + (learningQ.length > 1 ? 's' : '') + ' in learning</div><div class="waiting-time">' + mmss + '</div><div class="waiting-sub">Next card coming up...</div>';
-    waitTmr = setTimeout(tick, 1000);
-  }
-  tick();
 }
 
 function flip() {
