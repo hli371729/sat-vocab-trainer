@@ -311,7 +311,8 @@ function showWaiting(nextDue) {
     const rem = Math.max(0, nextDue - Date.now());
     if (rem <= 0) { show(); return; }
     const s = Math.ceil(rem / 1000);
-    ci.innerHTML = '<div class="waiting-icon">&#9203;</div><div style="color:var(--tx2);margin-bottom:8px">' + learningQ.length + ' card' + (learningQ.length > 1 ? 's' : '') + ' in learning</div><div class="waiting-time">0:' + String(s).padStart(2, '0') + '</div><div class="waiting-sub">Next card coming up...</div>';
+    const mmss = Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0');
+    ci.innerHTML = '<div class="waiting-icon">&#9203;</div><div style="color:var(--tx2);margin-bottom:8px">' + learningQ.length + ' card' + (learningQ.length > 1 ? 's' : '') + ' in learning</div><div class="waiting-time">' + mmss + '</div><div class="waiting-sub">Next card coming up...</div>';
     waitTmr = setTimeout(tick, 1000);
   }
   tick();
