@@ -2,13 +2,21 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover, maximum-scale=1.0, user-scalable=no">
 <title>SAT Vocab Trainer</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0a0a0f">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="SAT Vocab">
+<link rel="apple-touch-icon" href="icon-180.png">
+<link rel="icon" type="image/png" href="icon-192.png">
 <style>
 :root{--bg:#0a0a0f;--sf:#141419;--sf2:#1c1c24;--bd:#2a2a35;--tx:#e8e8ed;--tx2:#8888a0;--tx3:#55556a;--ac:#00d4ff;--acd:#0099bb;--cn:#ffb700;--red:#ff4060;--or:#ff8c00;--gn:#00c853;--bl:#0088cc}
 *{box-sizing:border-box;margin:0;padding:0}
 body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--tx);min-height:100vh}
-.app{max-width:860px;margin:0 auto;padding:16px}
+.app{max-width:860px;margin:0 auto;padding:16px;padding-top:calc(16px + env(safe-area-inset-top));padding-bottom:calc(16px + env(safe-area-inset-bottom));padding-left:calc(16px + env(safe-area-inset-left));padding-right:calc(16px + env(safe-area-inset-right))}
 .header{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid var(--bd);margin-bottom:20px;flex-wrap:wrap;gap:10px}
 .logo{font-size:18px;font-weight:700;color:var(--ac);letter-spacing:-0.5px}
 .nav{display:flex;gap:6px}
@@ -500,6 +508,10 @@ document.getElementById('set-new').value = S.newPerDay;
 document.getElementById('set-rev').value = S.maxReviews;
 buildQueues();
 show();
+
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {}));
+}
 </script>
 </body>
 </html>
